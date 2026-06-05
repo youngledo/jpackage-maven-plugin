@@ -13,7 +13,7 @@
 <plugin>
     <groupId>io.github.youngledo</groupId>
     <artifactId>jpackage-maven-plugin</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
 </plugin>
 ```
 
@@ -81,7 +81,7 @@ sdk env
 <plugin>
     <groupId>io.github.youngledo</groupId>
     <artifactId>jpackage-maven-plugin</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
     <executions>
         <execution>
             <id>package-app</id>
@@ -115,7 +115,7 @@ sdk env
 <plugin>
     <groupId>io.github.youngledo</groupId>
     <artifactId>jpackage-maven-plugin</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
     <executions>
         <execution>
             <id>package-app</id>
@@ -151,7 +151,7 @@ sdk env
 <plugin>
     <groupId>io.github.youngledo</groupId>
     <artifactId>jpackage-maven-plugin</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
     <executions>
         <execution>
             <id>package-app</id>
@@ -182,7 +182,7 @@ sdk env
 <plugin>
     <groupId>io.github.youngledo</groupId>
     <artifactId>jpackage-maven-plugin</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
     <executions>
         <execution>
             <id>leyden-package</id>

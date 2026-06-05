@@ -13,7 +13,7 @@ Maven plugin for packaging desktop Java applications with the JDK `jlink` and
 <plugin>
     <groupId>io.github.youngledo</groupId>
     <artifactId>jpackage-maven-plugin</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
 </plugin>
 ```
 
@@ -83,7 +83,7 @@ The sample writes packaging output under its own `target/` directory.
 <plugin>
     <groupId>io.github.youngledo</groupId>
     <artifactId>jpackage-maven-plugin</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
     <executions>
         <execution>
             <id>package-app</id>
@@ -117,7 +117,7 @@ project that writes the jar directly into `target/jpackage-input`.
 <plugin>
     <groupId>io.github.youngledo</groupId>
     <artifactId>jpackage-maven-plugin</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
     <executions>
         <execution>
             <id>package-app</id>
@@ -154,7 +154,7 @@ runtime image with the JavaFX modules.
 <plugin>
     <groupId>io.github.youngledo</groupId>
     <artifactId>jpackage-maven-plugin</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
     <executions>
         <execution>
             <id>package-app</id>
@@ -185,7 +185,7 @@ For JPMS apps, put the modular application jar and modular dependencies on
 <plugin>
     <groupId>io.github.youngledo</groupId>
     <artifactId>jpackage-maven-plugin</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
     <executions>
         <execution>
             <id>leyden-package</id>
