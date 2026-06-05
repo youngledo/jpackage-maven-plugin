@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-plugin:
+    name: Verify plugin
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: maven
+
+      - name: Verify
+        shell: bash
+        run: ./mvnw -B verify
+
+  sample-app-images:
+    name: Sample app images
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        sample:
+          - samples/classpath-swing/pom.xml
+          - samples/jpms-swing/pom.xml
+          - samples/classpath-javafx/pom.xml
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: maven
+
+      - name: Resolve plugin version
+        shell: bash
+        run: |
+          version="$(python3 - <<'PY'
+          import xml.etree.ElementTree as ET
+
+          ns = {"m": "http://maven.apache.org/POM/4.1.0"}
+          root = ET.parse("pom.xml").getroot()
+          value = root.findtext("m:version", namespaces=ns)
+          if value is None:
+              raise SystemExit("Missing project version in pom.xml")
+          print(value)
+          PY
+          )"
+          echo "PLUGIN_VERSION=$version" >> "$GITHUB_ENV"
+
+      - name: Install current plugin
+        shell: bash
+        run: ./mvnw -B -DskipTests install
+
+      - name: Build sample app image
+        shell: bash
+        run: ./mvnw -B -f ${{ matrix.sample }} -Djpackage.plugin.version=${{ env.PLUGIN_VERSION }} package
