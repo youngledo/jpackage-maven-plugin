@@ -9,6 +9,9 @@ Maven plugin for packaging desktop Java applications with the JDK `jlink` and
 
 ## Coordinates
 
+Maven Central:
+https://central.sonatype.com/artifact/io.github.youngledo/jpackage-maven-plugin
+
 ```xml
 <plugin>
     <groupId>io.github.youngledo</groupId>
@@ -48,17 +51,28 @@ that JDK will fail in the underlying JDK tool.
 
 ## Quick Start
 
-Install the plugin into your local Maven repository:
+Use the released plugin directly from Maven Central. No custom Maven repository
+is required:
+
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>io.github.youngledo</groupId>
+            <artifactId>jpackage-maven-plugin</artifactId>
+            <version>0.1.0</version>
+        </plugin>
+    </plugins>
+</build>
+```
+
+For a complete working example, copy one of the sample project configurations
+from this repository. When developing this plugin from source, install the
+current checkout locally before running the samples:
 
 ```bash
 sdk env
 ./mvnw install
-```
-
-Then use one of the sample projects:
-
-```bash
-sdk env
 ./mvnw -f samples/classpath-swing/pom.xml package
 ```
 
@@ -406,7 +420,8 @@ The release process is documented in `docs/releasing.md`.
 Tags matching `v*` trigger GitHub Actions publishing to Maven Central. The
 workflow validates that the tag matches `project.version`, refuses
 `-SNAPSHOT` versions, signs artifacts with GPG, and publishes through the
-Sonatype Central Publisher Portal.
+Sonatype Central Publisher Portal. After a successful release, the workflow
+bumps `main` to the next patch `-SNAPSHOT` version.
 
 ## License
 

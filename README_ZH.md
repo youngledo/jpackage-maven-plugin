@@ -9,6 +9,9 @@
 
 ## 坐标
 
+Maven Central：
+https://central.sonatype.com/artifact/io.github.youngledo/jpackage-maven-plugin
+
 ```xml
 <plugin>
     <groupId>io.github.youngledo</groupId>
@@ -46,17 +49,26 @@
 
 ## 快速开始
 
-先把插件安装到本地 Maven 仓库：
+直接从 Maven Central 使用已发布插件，不需要配置额外 Maven 仓库：
+
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>io.github.youngledo</groupId>
+            <artifactId>jpackage-maven-plugin</artifactId>
+            <version>0.1.0</version>
+        </plugin>
+    </plugins>
+</build>
+```
+
+完整配置可以参考本仓库中的示例项目。如果是在开发插件本身，需要先把当前源码安装到
+本地 Maven 仓库，再运行示例：
 
 ```bash
 sdk env
 ./mvnw install
-```
-
-然后运行一个示例项目：
-
-```bash
-sdk env
 ./mvnw -f samples/classpath-swing/pom.xml package
 ```
 
@@ -394,7 +406,8 @@ sdk env
 
 匹配 `v*` 的 tag 会触发 GitHub Actions 发布到 Maven Central。workflow 会校验
 tag 与 `project.version` 一致，拒绝发布 `-SNAPSHOT` 版本，使用 GPG 签名构件，
-并通过 Sonatype Central Publisher Portal 发布。
+并通过 Sonatype Central Publisher Portal 发布。发布成功后，workflow 会把 `main`
+自动提升到下一个 patch `-SNAPSHOT` 版本。
 
 ## 许可证
 

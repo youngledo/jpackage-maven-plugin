@@ -6,7 +6,7 @@ on:
       - "v*"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   publish:
@@ -97,3 +97,54 @@ jobs:
             org.sonatype.central:central-publishing-maven-plugin:0.10.0:publish \
             -DautoPublish=true \
             -Dmaven.consumer.pom.flatten=false
+
+  bump-next-development-version:
+    name: Bump next development version
+    needs: publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Resolve next snapshot version
+        shell: bash
+        run: |
+          release_version="${GITHUB_REF_NAME#v}"
+          IFS=. read -r major minor patch <<< "$release_version"
+          if [[ -z "$major" || -z "$minor" || -z "$patch" || "$patch" == *-* ]]; then
+            echo "Unsupported release version for automatic bump: $release_version" >&2
+            exit 1
+          fi
+          echo "NEXT_VERSION=$major.$minor.$((patch + 1))-SNAPSHOT" >> "$GITHUB_ENV"
+
+      - name: Bump project version
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os
+          import re
+          from pathlib import Path
+
+          version = os.environ["NEXT_VERSION"]
+          pom = Path("pom.xml")
+          text = pom.read_text()
+          text = re.sub(r"<version>[^<]+</version>", f"<version>{version}</version>", text, count=1)
+          pom.write_text(text)
+          PY
+          git diff -- pom.xml
+
+      - name: Commit next development version
+        shell: bash
+        run: |
+          if git diff --quiet -- pom.xml; then
+            echo "pom.xml already uses $NEXT_VERSION"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pom.xml
+          git commit -m "build: start $NEXT_VERSION"
+          git push origin HEAD:main

@@ -3,6 +3,9 @@
 This project publishes release tags to Maven Central through GitHub Actions and
 the Sonatype Central Publisher Portal.
 
+Artifact page:
+https://central.sonatype.com/artifact/io.github.youngledo/jpackage-maven-plugin
+
 ## Versioning
 
 - Use semantic versioning after the first public release.
@@ -62,15 +65,28 @@ git tag v0.1.0
 git push origin main v0.1.0
 ```
 
-The release workflow runs:
+The publish job runs:
 
 ```bash
-./mvnw -B -P release -DskipTests deploy
+./mvnw -B -P release -DskipTests install \
+  org.sonatype.central:central-publishing-maven-plugin:0.10.0:publish \
+  -DautoPublish=true \
+  -Dmaven.consumer.pom.flatten=false
 ```
 
 The `release` Maven profile attaches sources, attaches Javadocs, signs
 artifacts with GPG, uploads the deployment to the Central Portal, and auto
 publishes after validation.
+
+Before running the Maven publish command, the GitHub workflow temporarily
+rewrites `pom.xml` to Maven model `4.0.0` so Sonatype Central can associate the
+uploaded files with Maven coordinates. The committed source POM remains Maven
+`4.1.0`.
+
+After the publish job succeeds, a second workflow job checks out `main`, bumps
+the root project version to the next patch snapshot, commits it, and pushes it
+back to `main`. For example, publishing `v0.1.0` bumps `main` to
+`0.1.1-SNAPSHOT`.
 
 GitHub Packages can be added later as a secondary distribution target for
 snapshots or early access builds.
