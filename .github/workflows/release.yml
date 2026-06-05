@@ -76,4 +76,7 @@ jobs:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_TOKEN: ${{ secrets.CENTRAL_TOKEN }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-        run: ./mvnw -B -P release -DskipTests deploy
+        run: |
+          ./mvnw -B -P release -DskipTests install \
+            org.sonatype.central:central-publishing-maven-plugin:0.10.0:publish \
+            -DautoPublish=true
