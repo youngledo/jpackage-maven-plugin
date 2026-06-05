@@ -71,6 +71,22 @@ jobs:
             exit 1
           fi
 
+      - name: Prepare Central-compatible POM
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          pom = Path("pom.xml")
+          text = pom.read_text()
+          text = text.replace(' xmlns="http://maven.apache.org/POM/4.1.0"', ' xmlns="http://maven.apache.org/POM/4.0.0"')
+          text = text.replace("http://maven.apache.org/POM/4.1.0", "http://maven.apache.org/POM/4.0.0")
+          text = text.replace("https://maven.apache.org/xsd/maven-4.1.0.xsd", "https://maven.apache.org/xsd/maven-4.0.0.xsd")
+          text = text.replace("<modelVersion>4.1.0</modelVersion>", "<modelVersion>4.0.0</modelVersion>")
+          text = text.replace('\n         root="true">', ">")
+          pom.write_text(text)
+          PY
+
       - name: Publish
         env:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
