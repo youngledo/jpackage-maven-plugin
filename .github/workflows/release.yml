@@ -50,7 +50,17 @@ jobs:
       - name: Validate release version
         shell: bash
         run: |
-          version="$(./mvnw -q -DforceStdout help:evaluate -Dexpression=project.version)"
+          version="$(python3 - <<'PY'
+          import xml.etree.ElementTree as ET
+
+          ns = {"m": "http://maven.apache.org/POM/4.1.0"}
+          root = ET.parse("pom.xml").getroot()
+          value = root.findtext("m:version", namespaces=ns)
+          if value is None:
+              raise SystemExit("Missing project version in pom.xml")
+          print(value)
+          PY
+          )"
           tag="${GITHUB_REF_NAME#v}"
           if [[ "$version" == *-SNAPSHOT ]]; then
             echo "Refusing to publish SNAPSHOT version: $version" >&2
