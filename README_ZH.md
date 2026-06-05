@@ -390,10 +390,11 @@ sdk env
 
 ## 发布流程
 
-预期发布流程见 `docs/releasing.md`。
+发布流程见 `docs/releasing.md`。
 
-目前还没有把公开发布自动化接入构建。首次公开发布前，需要补充 Maven Central 或
-GitHub Packages 发布、必要的仓库签名，以及基于 tag 的发布检查。
+匹配 `v*` 的 tag 会触发 GitHub Actions 发布到 Maven Central。workflow 会校验
+tag 与 `project.version` 一致，拒绝发布 `-SNAPSHOT` 版本，使用 GPG 签名构件，
+并通过 Sonatype Central Publisher Portal 发布。
 
 ## 许可证
 

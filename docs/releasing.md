@@ -1,6 +1,7 @@
 # Releasing
 
-This project does not have automated public release publishing yet.
+This project publishes release tags to Maven Central through GitHub Actions and
+the Sonatype Central Publisher Portal.
 
 ## Versioning
 
@@ -34,12 +35,45 @@ systems:
 | Linux | `app-image`, `deb`, `rpm` |
 | Windows | `app-image`, `msi`, `exe` |
 
-## Publishing Targets
+## GitHub Secrets
 
-Maven Central should be the primary public distribution target.
+Configure these repository secrets before pushing a release tag:
 
-GitHub Packages can be added as a secondary distribution target for snapshots or
-early access builds.
+| Secret | Purpose |
+|---|---|
+| `CENTRAL_USERNAME` | Sonatype Central Portal user token username. |
+| `CENTRAL_TOKEN` | Sonatype Central Portal user token password/token. |
+| `GPG_PRIVATE_KEY` | ASCII-armored private key used to sign release artifacts. |
+| `GPG_PASSPHRASE` | Passphrase for `GPG_PRIVATE_KEY`. |
+
+## Publishing
+
+Release publishing is triggered by tags matching `v*`. The workflow validates
+that the tag and `project.version` match and refuses to publish `-SNAPSHOT`
+versions.
+
+Example release:
+
+```bash
+./mvnw versions:set -DnewVersion=0.1.0
+./mvnw verify
+git commit -am "release: prepare 0.1.0"
+git tag v0.1.0
+git push origin main v0.1.0
+```
+
+The release workflow runs:
+
+```bash
+./mvnw -B -P release -DskipTests deploy
+```
+
+The `release` Maven profile attaches sources, attaches Javadocs, signs
+artifacts with GPG, uploads the deployment to the Central Portal, and auto
+publishes after validation.
+
+GitHub Packages can be added later as a secondary distribution target for
+snapshots or early access builds.
 
 ## Release Notes
 

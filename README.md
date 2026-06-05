@@ -401,11 +401,12 @@ manual until integration tests are added.
 
 ## Release Process
 
-The intended release process is documented in `docs/releasing.md`.
+The release process is documented in `docs/releasing.md`.
 
-For now, publishable release automation is not wired into the build. Before the
-first public release, add Maven Central or GitHub Packages publishing,
-repository signing if required, and tag-based release checks.
+Tags matching `v*` trigger GitHub Actions publishing to Maven Central. The
+workflow validates that the tag matches `project.version`, refuses
+`-SNAPSHOT` versions, signs artifacts with GPG, and publishes through the
+Sonatype Central Publisher Portal.
 
 ## License
 
